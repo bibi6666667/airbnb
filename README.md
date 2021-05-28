@@ -4,7 +4,7 @@ Codesquad Masters 2021 - 그룹 프로젝트 #4
 ---
 
 # Common
-- team 비빰라연✨
+## team 비빰라연✨
 - 팀원 소개
 
     💁‍♀️ [BE] Bibi : 출퇴근시간 준수하여 코라밸 달성하자 아자아자 화이팅!!   
