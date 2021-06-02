@@ -1,7 +1,7 @@
 package com.codesquad.airbnb.service;
 
-import com.codesquad.airbnb.GoogleUser;
-import com.codesquad.airbnb.OAuthToken;
+import com.codesquad.airbnb.oauth.GoogleUser;
+import com.codesquad.airbnb.oauth.OAuthToken;
 import com.codesquad.airbnb.domain.User;
 import com.codesquad.airbnb.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,7 +36,6 @@ public class UserService {
 
     // HTTP post request 만들기
     public ResponseEntity<String> createPost(String code) {
-        // Body 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>(); //form 타입의 key, value를 넣기 위해 사용한다.
         params.add("code", code);
         params.add("client_id", CLIENT_ID);
@@ -44,16 +43,12 @@ public class UserService {
         params.add("redirect_uri", REDIRECT_URI);
         params.add("grant_type", GRANT_TYPE);
 
-        // 헤더 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
         String url = "https://oauth2.googleapis.com/token";
-
-        // 바디 + 헤더 = HttpEntity 만들기
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
 
-        // RestTemplate으로 HTTP post 요청 만들기
         return restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
     }
 
@@ -76,7 +71,6 @@ public class UserService {
         headers.add("Authorization", "Bearer " + oAuthToken.getAccessToken());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
-        // 요청 보내기
         return restTemplate.exchange(url, HttpMethod.GET, request, String.class);
     }
 
@@ -90,7 +84,6 @@ public class UserService {
         return googleUser;
     }
     
-    // TODO : 기존 email이 있다면 User 생성하지 않음. email 없다면 새로운 User를 accessToken과 함께 저장
     public void save(User user) {
         userRepository.insert(user);
     }
