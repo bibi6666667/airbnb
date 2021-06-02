@@ -1,5 +1,6 @@
 package com.codesquad.airbnb.service;
 
+import com.codesquad.airbnb.JwtTokenProvider;
 import com.codesquad.airbnb.oauth.GoogleUser;
 import com.codesquad.airbnb.oauth.OAuthToken;
 import com.codesquad.airbnb.domain.User;
@@ -28,16 +29,18 @@ public class UserService {
 
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private static final String CLIENT_ID = "";
     private static final String CLIENT_SECRET = "";
     private static final String REDIRECT_URI = "http://localhost:8080/oauth/google/callback";
     private static final String GRANT_TYPE = "authorization_code";
 
-    public UserService(UserRepository userRepository, ObjectMapper objectMapper, RestTemplate restTemplate) {
+    public UserService(UserRepository userRepository, ObjectMapper objectMapper, RestTemplate restTemplate, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public ResponseEntity<String> createPost(String code) {
@@ -95,5 +98,9 @@ public class UserService {
         List<User> users = userRepository.findByEmail(googleUser.getEmail());
         logger.info("Joined User: {}", users.stream().findAny());
         return !users.isEmpty();
+    }
+
+    public String createToken(User user) {
+        return jwtTokenProvider.createToken(user.getName());
     }
 }
