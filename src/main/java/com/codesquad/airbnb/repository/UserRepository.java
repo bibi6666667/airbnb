@@ -27,6 +27,11 @@ public class UserRepository implements JdbcRepository<User> {
         return jdbcTemplate.query(sql, userRowMapper(), email);
     }
 
+    public Optional<User> findByName(String name) {
+        String sql = "select `name`, `email` from `user` where `name` like ?";
+        return jdbcTemplate.query(sql, userRowMapper(), name).stream().findAny();
+    }
+
     @Override
     public Optional<User> findById(Long id) {
         return Optional.empty();
