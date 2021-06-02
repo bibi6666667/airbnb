@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -102,5 +103,9 @@ public class UserService {
 
     public String createToken(User user) {
         return jwtTokenProvider.createToken(user.getName());
+    }
+
+    public User findByName(String name){
+        return userRepository.findByName(name).orElseThrow(NoSuchElementException::new);
     }
 }
