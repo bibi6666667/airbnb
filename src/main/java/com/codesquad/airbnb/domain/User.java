@@ -11,6 +11,11 @@ public class User {
     private String name;
     private String accessToken;
 
+    public User(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
+
     public User(String email, String name, String accessToken) {
         this.email = email;
         this.name = name;
@@ -27,5 +32,15 @@ public class User {
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                '}';
     }
 }

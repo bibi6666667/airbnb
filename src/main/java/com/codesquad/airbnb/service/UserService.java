@@ -6,6 +6,8 @@ import com.codesquad.airbnb.domain.User;
 import com.codesquad.airbnb.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,8 +17,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 public class UserService {
+
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
 
@@ -34,9 +40,8 @@ public class UserService {
         this.restTemplate = restTemplate;
     }
 
-    // HTTP post request 만들기
     public ResponseEntity<String> createPost(String code) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(); //form 타입의 key, value를 넣기 위해 사용한다.
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("code", code);
         params.add("client_id", CLIENT_ID);
         params.add("client_secret", CLIENT_SECRET);
@@ -52,10 +57,9 @@ public class UserService {
         return restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
     }
 
-    // 위의 post요청의 response를 OAuth토큰 객체로 만들어 주기
     public OAuthToken getAccessToken(ResponseEntity<String> response) {
         OAuthToken oAuthToken = null;
-        try { // response의 body를 OAuthToken을 맵핑
+        try {
             oAuthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -63,7 +67,6 @@ public class UserService {
         return oAuthToken;
     }
 
-    // 받아 온 액세스토큰을 가지고 구글 유저 정보를 get요청한다.
     public ResponseEntity<String> createGet(OAuthToken oAuthToken) {
         String url = "https://www.googleapis.com/oauth2/v1/userinfo";
 
@@ -83,8 +86,14 @@ public class UserService {
         }
         return googleUser;
     }
-    
+
     public void save(User user) {
         userRepository.insert(user);
+    }
+
+    public boolean isJoinedUser(GoogleUser googleUser) {
+        List<User> users = userRepository.findByEmail(googleUser.getEmail());
+        logger.info("Joined User: {}", users.stream().findAny());
+        return !users.isEmpty();
     }
 }
