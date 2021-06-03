@@ -34,6 +34,12 @@ public class RoomController {
         return new Rooms(roomResponses);
     }
 
+    @GetMapping("/{userId}/wish")
+    public Wishes showWish(@PathVariable("userId") Long userId) {
+        List<Long> wishList = roomService.getWishes(userId);
+        return new Wishes(wishList);
+    }
+
     @PostMapping("/{userId}/wish/{roomId}")
     public void addWish(@PathVariable("roomId") Long roomId, @PathVariable("userId") Long userId) {
         roomService.saveWish(roomId, userId);

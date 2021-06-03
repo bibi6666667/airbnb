@@ -7,7 +7,14 @@ public class Wish {
     @Id
     private Long id;
 
-    public Wish(Long id) {
+    private Long roomId;
+
+    public Wish(Long id, Long roomId) {
         this.id = id;
+        this.roomId = roomId;
+    }
+
+    public Long getRoomId() {
+        return roomId;
     }
 }

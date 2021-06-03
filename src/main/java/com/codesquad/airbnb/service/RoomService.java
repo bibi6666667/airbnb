@@ -1,5 +1,6 @@
 package com.codesquad.airbnb.service;
 
+import com.codesquad.airbnb.domain.Wish;
 import com.codesquad.airbnb.dto.RoomResponse;
 import com.codesquad.airbnb.exception.WishNotAddableException;
 import com.codesquad.airbnb.exception.WishNotFoundException;
@@ -31,6 +32,12 @@ public class RoomService {
     public List<RoomResponse> getFilteredRoomDTOS(LocalDate checkIn, LocalDate checkOut, int minPrice, int maxPrice, int numberOfPeople) {
         return roomRepository.getFilteredRooms(checkIn, checkOut, minPrice, maxPrice, numberOfPeople).stream()
                 .map(RoomResponse::toRoomDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> getWishes(Long userId) {
+        return wishRepository.findAll(userId).stream()
+                .map(Wish::getRoomId)
                 .collect(Collectors.toList());
     }
 
