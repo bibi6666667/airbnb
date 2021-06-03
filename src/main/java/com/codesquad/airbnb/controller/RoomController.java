@@ -2,6 +2,7 @@ package com.codesquad.airbnb.controller;
 
 import com.codesquad.airbnb.dto.RoomResponse;
 import com.codesquad.airbnb.dto.Rooms;
+import com.codesquad.airbnb.dto.Wishes;
 import com.codesquad.airbnb.service.RoomService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;

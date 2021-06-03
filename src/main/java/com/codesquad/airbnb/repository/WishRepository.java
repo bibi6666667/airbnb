@@ -26,6 +26,11 @@ public class WishRepository {
         return jdbcTemplate.query(sql, wishRowMapper(), roomId, userId);
     }
 
+    public List<Wish> findAll(Long userId) {
+        String sql = "select wish.id, room_id from wish where user_id = ?";
+        return jdbcTemplate.query(sql, wishRowMapper(), userId);
+    }
+
     public void delete(Long roomId, Long userId) {
         String sql = "delete from `wish` where `room_id` = ? and `user_id` = ?";
         jdbcTemplate.update(sql, roomId, userId);
@@ -33,7 +38,7 @@ public class WishRepository {
 
     private RowMapper<Wish> wishRowMapper() {
         return (resultSet, rowNum) -> {
-            Wish wish = new Wish(resultSet.getLong("id"));
+            Wish wish = new Wish(resultSet.getLong("id"), resultSet.getLong("room_id"));
             return wish;
         };
     }
