@@ -23,6 +23,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "redirect:" + ENDPOINT + "?client_id=" + CLIENT_ID + "&redirect_uri=" + REDIRECT_URI
+                + "&response_type=" + RESPONSE_TYPE + "&scope=" + SCOPE;
+
+    }
+
     @GetMapping("/oauth/google/callback")
     public ResponseEntity oauthLogin(String code) {
         userService.oauthLogin(code);
