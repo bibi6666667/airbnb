@@ -1,15 +1,18 @@
 package com.codesquad.airbnb.service;
 
+import com.codesquad.airbnb.domain.User;
+import com.codesquad.airbnb.exception.UserNotFoundException;
+import com.codesquad.airbnb.jwt.JwtTokenProvider;
+import com.codesquad.airbnb.jwt.TokenResponse;
 import com.codesquad.airbnb.oauth.GoogleUser;
 import com.codesquad.airbnb.oauth.OAuthToken;
-import com.codesquad.airbnb.domain.User;
 import com.codesquad.airbnb.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,13 +21,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final OAuthService oauthService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserService(UserRepository userRepository, OAuthService oauthService) {
+    public UserService(UserRepository userRepository, OAuthService oauthService, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.oauthService = oauthService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public void oauthLogin(String code) {
+    public String oauthLogin(String code) {
         ResponseEntity<String> accessTokenResponse = oauthService.createPostRequest(code);
         OAuthToken oAuthToken = oauthService.getAccessToken(accessTokenResponse);
         logger.info("Access Token: {}", oAuthToken.getAccessToken());
@@ -36,12 +41,14 @@ public class UserService {
         if (!isJoinedUser(googleUser)) {
             signUp(googleUser, oAuthToken);
         }
+        User user = userRepository.findByEmail(googleUser.getEmail()).orElseThrow(UserNotFoundException::new);
+        return jwtTokenProvider.createToken(user.getId());
     }
 
     private boolean isJoinedUser(GoogleUser googleUser) {
-        List<User> users = userRepository.findByEmail(googleUser.getEmail());
-        logger.info("Joined User: {}", users.stream().findAny());
-        return !users.isEmpty();
+        Optional<User> users = userRepository.findByEmail(googleUser.getEmail());
+        logger.info("Joined User: {}", users);
+        return users.isPresent();
     }
 
     private void signUp(GoogleUser googleUser, OAuthToken oAuthToken) {

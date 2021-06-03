@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -21,14 +22,14 @@ public class UserRepository {
         jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getAccessToken());
     }
 
-    public List<User> findByEmail(String email) {
-        String sql = "select `name`, `email` from `user` where `email` like ?";
-        return jdbcTemplate.query(sql, userRowMapper(), email);
+    public Optional<User> findByEmail(String email) {
+        String sql = "select user.id, `name`, `email` from `user` where `email` like ?";
+        return jdbcTemplate.query(sql, userRowMapper(), email).stream().findAny();
     }
 
     private RowMapper<User> userRowMapper() {
         return (resultSet, rowNum) -> {
-            User user = new User(resultSet.getString("email"), resultSet.getString("name"));
+            User user = new User(resultSet.getLong("id"), resultSet.getString("email"), resultSet.getString("name"));
             return user;
         };
     }

@@ -11,7 +11,8 @@ public class User {
     private String name;
     private String accessToken;
 
-    public User(String email, String name) {
+    public User(Long id, String email, String name) {
+        this.id = id;
         this.email = email;
         this.name = name;
     }
@@ -20,6 +21,10 @@ public class User {
         this.email = email;
         this.name = name;
         this.accessToken = accessToken;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEmail() {

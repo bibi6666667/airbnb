@@ -1,5 +1,6 @@
 package com.codesquad.airbnb.controller;
 
+import com.codesquad.airbnb.jwt.TokenResponse;
 import com.codesquad.airbnb.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,11 @@ public class UserController {
     public String login() {
         return "redirect:" + ENDPOINT + "?client_id=" + CLIENT_ID + "&redirect_uri=" + REDIRECT_URI
                 + "&response_type=" + RESPONSE_TYPE + "&scope=" + SCOPE;
-
     }
 
     @GetMapping("/oauth/google/callback")
-    public ResponseEntity oauthLogin(String code) {
-        userService.oauthLogin(code);
-        return new ResponseEntity("로그인 성공", HttpStatus.OK);
+    public ResponseEntity<TokenResponse> oauthLogin(String code) {
+        String token = userService.oauthLogin(code);
+        return new ResponseEntity(new TokenResponse(token, "bearer"), HttpStatus.OK);
     }
 }
