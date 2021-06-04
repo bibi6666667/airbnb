@@ -15,23 +15,17 @@ Codesquad Masters 2021 - 그룹 프로젝트 #4
 - [TEAM 21 협업 룰](https://github.com/bibi6666667/airbnb/wiki/TEAM-21-협업-룰)
 - [TEAM 21 협업 그라운드 룰](https://github.com/bibi6666667/airbnb/wiki/TEAM-21-협업-그라운드-룰)
 
-# Back
-- 한 것
-    - [ERD 짜기](https://github.com/bibi6666667/airbnb/wiki/%5BBE%5D-DB-%EC%84%A4%EA%B3%84,-ERD)
-    - [API만들기](https://github.com/bibi6666667/airbnb/wiki/%5BBE%5D-API-(%EC%9E%91%EC%84%B1-%EC%A4%91..))
-- 힘들었어요...
-    - JdbcTemplate😈....... (에러와 삽질의 늪😭)
-    - 숙소 예약 생성시, 숙소와 예약 테이블을 조인하고, 날짜 중복확인하는 로직이 어려웠다.
-    - 둘이서 사이좋게 열심히 하고 있는데 좀처럼 나가지 않는 진도.... 흑
-- 자랑할 것
-    - 테스트 코드 작성하면서 Repository 메소드 구현이 잘 동작하는 지 확인했다.
-    - 그렇지만 예약 생성시 날짜 중복확인하는 쿼리는 테스트를 제대로 하지 않아서 오랫동안 삽질 함. 반성 중. 
-        - 삽질꾼이 둘이면 배가 산으로 가요~🏞
-    - 가족같은(?) 화목한 분위기의 짝코딩👭
-- 회고 
-    - bibi : 에어비앤비, 여기어때, 야놀자 개발자는 대단하신 분들이다.......
-    - yeon : 처음 보는 에러를 해결하면서 배운게 많은 한 주 였다. 다음주는 꼭 PR 보냅시다!
 
+# [BE] 비연
+
+💁‍♂️ 배포 링크 : http://54.180.145.53:8080
+
+### 구현 사항
+- [ERD](https://github.com/bibi6666667/airbnb/wiki/%5BBE%5D-DB-%EC%84%A4%EA%B3%84,-ERD)
+- [API](https://github.com/bibi6666667/airbnb/wiki/%5BBE%5D-API)
+- Google OAuth를 연동해 회원가입 & 로그인
+- JWT 토큰 기반 로그인
+- 스크립트, 슬랙 봇을 통한 자동배포
 
 
 # Front
