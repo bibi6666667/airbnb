@@ -20,4 +20,9 @@ public class GlobalExceptionHandler {
     public String handleNotFound(NotFoundException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(TokenEmptyException.class)
+    public String handleTokenEmpty(TokenEmptyException e) {
+        return e.getMessage();
+    }
 }
