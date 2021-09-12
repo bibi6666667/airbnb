@@ -33,15 +33,23 @@ const SearchBar = forwardRef(
     //@ts-ignore
     { searchBarTexts, searchBarRef }: ITextTopBackground,
   ) => {
-    const { result, fetchState: {isLoading, isError}} = useFetch<IRoomsInfo>(API.get.rooms);
+    const {
+      result,
+      fetchState: { isLoading, isError },
+    } = useFetch<IRoomsInfo>(API.get.rooms);
     const [salePrices, setSalePrices] = useState<number[]>([]);
     const [searchURL, setSearchURL] = useState<string>('/search');
 
     useEffect(() => {
-      if (isLoading || !result || isError) 
-        setSalePrices([...Array(300)].map((_) => Math.floor(Math.random() * 1000000)));
-      else
-        setSalePrices(result.rooms.map((data) => data.salePrice));
+      if (isLoading || !result || isError)
+        setSalePrices((state) => {
+          const data = [...Array(300)].map((_) =>
+            Math.floor(Math.random() * 1000000),
+          );
+          state = data;
+          return state;
+        });
+      else setSalePrices(result.rooms.map((data) => data.salePrice));
     }, [isLoading]);
 
     // 1. 초기 값 설정
@@ -51,7 +59,8 @@ const SearchBar = forwardRef(
     const mainDispatch = useMainDispatch();
     const {
       calendar: { startDate, endDate },
-      fee, peopleCount
+      fee,
+      peopleCount,
     } = useSearchBarState();
 
     const checkInPlaceHolderRef = useRef<HTMLParagraphElement>(null);
@@ -83,10 +92,11 @@ const SearchBar = forwardRef(
       let feePlaceHolder = feePlaceHolderRef.current;
 
       // '금액대 설정'로 변경 --> (초기화 시)
-      if (!start && !end) 
-        feePlaceHolder.innerHTML = '금액대 설정'
+      if (!start && !end) feePlaceHolder.innerHTML = '금액대 설정';
       else
-        feePlaceHolder.innerHTML = `${threeDigitsComma(start)} ~ ${threeDigitsComma(end)}`;
+        feePlaceHolder.innerHTML = `${threeDigitsComma(
+          start,
+        )} ~ ${threeDigitsComma(end)}`;
     }, [fee]);
 
     // 3) 인원 설정이 업데이트 되었을 때
@@ -96,10 +106,13 @@ const SearchBar = forwardRef(
 
       const peopleCntValues = Object.values(peopleCount);
       if (peopleCntValues.every((value) => !value))
-        peoplePlaceHolder.innerHTML = '게스트 추가'
+        peoplePlaceHolder.innerHTML = '게스트 추가';
       else {
         // const { adult, infant, child } = peopleCount;
-        const guestCount = peopleCntValues.reduce((result, curr) => (result += curr, result), 0);
+        const guestCount = peopleCntValues.reduce(
+          (result, curr) => ((result += curr), result),
+          0,
+        );
         peoplePlaceHolder.innerHTML = `게스트 ${guestCount}명`;
         // peoplePlaceHolder.innerHTML = `게스트 ${guestCount}명 (성인 ${adult}명, 어린이 ${child}명, 유아 ${infant}명)`;
       }
@@ -108,18 +121,26 @@ const SearchBar = forwardRef(
     // 4) 전부 업데이트 되었을 때 체크 (Search페이지로 넘어갈 쿼리스트링 생성)
     useEffect(() => {
       const { start, end } = fee;
-      if (!startDate || !endDate || !start || !end  || !peopleCount)
+      if (!startDate || !endDate || !start || !end || !peopleCount)
         return setSearchURL('/search');
-      const handleNumberFormat = (num : number) => { return num <= 9 ? `0${num}`: num }
-      const checkIn = `${startDate.getFullYear()}-${(handleNumberFormat(startDate.getMonth() + 1))}-${handleNumberFormat(startDate.getDate())}`;
-      const checkOut = `${endDate.getFullYear()}-${(handleNumberFormat(endDate.getMonth() + 1))}-${handleNumberFormat(endDate.getDate())}`;
+      const handleNumberFormat = (num: number) => {
+        return num <= 9 ? `0${num}` : num;
+      };
+      const checkIn = `${startDate.getFullYear()}-${handleNumberFormat(
+        startDate.getMonth() + 1,
+      )}-${handleNumberFormat(startDate.getDate())}`;
+      const checkOut = `${endDate.getFullYear()}-${handleNumberFormat(
+        endDate.getMonth() + 1,
+      )}-${handleNumberFormat(endDate.getDate())}`;
 
       const peopleCntValues = Object.values(peopleCount);
-      const guestCount = peopleCntValues.reduce((result, curr) => (result += curr, result), 0);
+      const guestCount = peopleCntValues.reduce(
+        (result, curr) => ((result += curr), result),
+        0,
+      );
 
       const searchURLTmp = `/search?checkIn=${checkIn}&checkOut=${checkOut}&minPrice=${start}&maxPrice=${end}&numberOfPeople=${guestCount}`;
       setSearchURL(searchURLTmp);
-
     }, [startDate, endDate, fee, peopleCount]);
     // ------------
 
@@ -183,7 +204,9 @@ const SearchBar = forwardRef(
           {searchBarClickedIdx > -1 && (
             <SearchBarRow>
               {searchBarClickedIdx === CALENDAR_FOCUS && <CalendarModal />}
-              {searchBarClickedIdx === FEE_FOCUS && <FeeModal data={salePrices} />}
+              {searchBarClickedIdx === FEE_FOCUS && (
+                <FeeModal data={salePrices} />
+              )}
               {searchBarClickedIdx === PEOPLE_FOCUS && <PeopleModal />}
             </SearchBarRow>
           )}
@@ -271,7 +294,7 @@ const SearchMenuItem = styled.li<ISearchMenuItem>`
       color: ${({ theme }) => theme.colors.gray3};
       min-width: 140px;
 
-      &.p_36{
+      &.p_36 {
         padding-right: 36px;
       }
     }
